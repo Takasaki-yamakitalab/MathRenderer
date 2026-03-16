@@ -5,6 +5,11 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+if (ANDROID)
+    set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE BOTH)
+    set(CMAKE_ANDROID_STL_TYPE c++_static)
+endif()
+
 set(SRC
     src/bmp.cpp
     src/math_renderer.cpp
@@ -15,7 +20,7 @@ set(SRC
 
 if(MSVC)
     if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-        string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FRAGS "${CMAKE_CXX_FLAGS}")
+        string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     else()
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
     endif()
@@ -44,11 +49,21 @@ install(EXPORT ${PROJECT_NAME}Targets
     NAMESPACE ${PROJECT_NAME}::
     DESTINATION lib/cmake/${PROJECT_NAME}
 )
-file(WRITE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+
+include(CMakePackageConfigHelpers)
+file(WRITE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake.in
     "
+@PACKAGE_INIT@
 include(\${CMAKE_CURRENT_LIST_DIR}/${PROJECT_NAME}Targets.cmake)
     "
 )
+configure_package_config_file(
+    ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake.in
+    ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+    INSTALL_DESTINATION lib/cmake/${PROJECT_NAME}
+)
 install(FILES ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake DESTINATION lib/cmake/${PROJECT_NAME})
 
-add_subdirectory(example)
+if (NOT ANDROID)
+    add_subdirectory(example)
+endif()
