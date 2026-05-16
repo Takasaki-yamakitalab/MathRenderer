@@ -16,6 +16,7 @@ set(SRC
     src/math_renderer_drawing.cpp
     src/math_renderer_input.cpp
     src/math_renderer_layout.cpp
+    src/math_renderer_touch.cpp
     src/math_renderer_to_calc.cpp)
 
 if(MSVC)
