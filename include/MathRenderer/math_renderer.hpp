@@ -83,14 +83,17 @@ int process_delete_key(std::vector<Token>& tokens, int& cursor);
  * @return status :
  *      - 0 : continue (default)
  *      - 1 : execute calculation
- *          - please pass the token vector to make_math_str() and use SciCalc
+ *          - please pass the token vector to make_math_str() and use SciCalc::calc()
  *      - 2 : plot 2D graph
- *          - please pass the token vector to DrawGraph
+ *          - please pass the token vector to DrawGraph::plot()
+ *      - 3 : execute expand
+ *          - please pass the token vector to make_math_str() and use SciCalc::expand()
  *      - -1 : error
  */
 int process_input(std::vector<Token>& tokens, int& cursor, const std::string& input);
 
 int make_math_str(const std::vector<Token>& tokens, int& index, std::string& str);
+std::vector<Token> make_tokens(std::string& math_str);
 
 int move_cursor_touch(const std::vector<Token>& tokens, int& cursor, const int touchX, const int touchY);
 }  // namespace math_renderer
