@@ -75,6 +75,19 @@ Token make_token(int type, const std::string& name);
 int move_cursor_horizontal(const std::vector<Token>& tokens, int& cursor, int dir);
 int insert_input(std::vector<Token>& tokens, int& cursor, const std::string& input);
 int process_delete_key(std::vector<Token>& tokens, int& cursor);
+
+/**
+ * @param [out] tokens : vector of input tokens
+ * @param [out] cursor : cursor position (index of the token)
+ * @param [in] input : input command
+ * @return status :
+ *      - 0 : continue (default)
+ *      - 1 : execute calculation
+ *          - please pass the token vector to make_math_str() and use SciCalc
+ *      - 2 : plot 2D graph
+ *          - please pass the token vector to DrawGraph
+ *      - -1 : error
+ */
 int process_input(std::vector<Token>& tokens, int& cursor, const std::string& input);
 
 int make_math_str(const std::vector<Token>& tokens, int& index, std::string& str);
