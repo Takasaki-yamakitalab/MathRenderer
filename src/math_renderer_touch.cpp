@@ -1,4 +1,5 @@
 #include "MathRenderer/math_renderer.hpp"
+#include "MathRenderer/math_renderer_defines.hpp"
 
 namespace math_renderer {
 
@@ -11,6 +12,8 @@ int move_cursor_touch(const std::vector<Token>& tokens, int& cursor, const int t
     cursor = 0;
     for (int i = 0; i < tokens.size(); i++) {
         if (tokens[i].x < 0 || tokens[i].y < 0) continue;
+        // if (tokens[i].can_be_pointed == false) continue;
+        if (tokens[i].type == TK_OPEN_BRACE || tokens[i].type == TK_OPEN_SQUARE || tokens[i].type == TK_CLOSE_SQUARE) continue;
         if (norm2(touchX, touchY, tokens[cursor].x, tokens[cursor].y + tokens[cursor].scale * BASE_H / 2) > norm2(touchX, touchY, tokens[i].x, tokens[i].y + tokens[i].scale * BASE_H / 2)) {
             cursor = i;
         }

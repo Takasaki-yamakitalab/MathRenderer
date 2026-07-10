@@ -3,6 +3,27 @@
 #include <stdio.h>
 
 namespace math_renderer {
+static const std::vector<std::pair<std::string, std::vector<std::string>>> MATH_FUNC_NAME_LIST = {
+    { "@arcsinh",   {"a", "s", "i", "n"}},
+    { "@arccosh",   {}},
+    { "@arctanh",   {}},
+    { "@arcsin",    {}},
+    { "@arccos",    {}},
+    { "@arctan",    {}},
+    { "@gamma",     {}},
+    { "@sinh",      {}},
+    { "@cosh",      {}},
+    { "@tanh",      {}},
+    { "@sqrt",      {}},
+    { "@cbrt",      {}},
+    { "@sin",       {}},
+    { "@cos",       {}},
+    { "@tan",       {}},
+    { "@log",       {}},
+    { "@exp",       {}},
+    { "@ln",        {}},
+};
+
 int make_math_str(const std::vector<Token>& tokens, int& index, std::string& str) {
     while (index < tokens.size() && tokens[index].type != TK_CLOSE_BRACE && tokens[index].type != TK_CLOSE_SQUARE) {
         if (tokens[index].type == TK_OPEN_SQUARE ||
@@ -201,6 +222,76 @@ static std::vector<Token> parse_numbers(std::string& formula) {
     ret.insert(ret.end(), temp.begin(), temp.end());
     return ret;
 }
+static std::vector<Token> parse_math_function(std::string& formula) {
+    const std::vector<std::pair<std::string, std::vector<std::string>>> MATH_FUNC_LIST = {
+        { "@arcsinh",   { "a", "s", "i", "n", "h" } },
+        { "@arccosh",   { "a", "c", "o", "s", "h" } },
+        { "@arctanh",   { "a", "t", "a", "n", "h" } },
+        { "@arcsin",    { "a", "s", "i", "n" } },
+        { "@arccos",    { "a", "c", "o", "s" } },
+        { "@arctan",    { "a", "t", "a", "n" } },
+        { "@gamma",     { "Gamma" } },
+        { "@sinh",      { "s", "i", "n", "h" } },
+        { "@cosh",      { "c", "o", "s", "h" } },
+        { "@tanh",      { "t", "a", "n", "h" } },
+        { "@sin",       { "s", "i", "n" } },
+        { "@cos",       { "c", "o", "s" } },
+        { "@tan",       { "t", "a", "n" } },
+        { "@exp",       { "e", "x", "p" }},
+        { "@log",       { "l", "o", "g" }},
+        { "@ln",        { "l", "n" }},
+    };
+
+    std::vector<Token> ret;
+    for (size_t i = 0; i < MATH_FUNC_LIST.size(); i++) {
+        if (formula.find(MATH_FUNC_LIST[i].first) == 0) {
+            ret.push_back(make_token(TK_SYMBOL, MATH_FUNC_LIST[i].first, MATH_FUNC_LIST[i].second));
+            formula = formula.substr(MATH_FUNC_LIST[i].first.length());
+            break;
+        }
+    }
+    std::vector<Token> temp = make_tokens(formula);
+    ret.insert(ret.end(), temp.begin(), temp.end());
+    return ret;
+}
+static std::vector<Token> parse_special_function(std::string& formula) {
+    const std::vector<std::pair<std::string, std::pair<int, std::vector<std::string>>>> SPECIAL_FUNC_LIST = {
+        { "\\prod", { TK_PROD, { "Pi" } }},
+        { "\\perm", { TK_PERM, { "" } }},
+        { "\\comb", { TK_COMB, { "" } }},
+        { "\\diff", { TK_DIFF, { "" } }},
+        { "\\frac", { TK_FRAC, { "" } }},
+        { "\\sum",  { TK_SUM, { "Sigma" } }},
+        { "\\int",  { TK_INT, { "" } }},
+        { "\\log",  { TK_LOG, { "l", "o", "g" } }},
+    };
+
+    std::vector<Token> ret;
+    for (size_t i = 0; i < SPECIAL_FUNC_LIST.size(); i++) {
+        if (formula.find(SPECIAL_FUNC_LIST[i].first) == 0) {
+            ret.push_back(make_token(SPECIAL_FUNC_LIST[i].second.first, SPECIAL_FUNC_LIST[i].first, SPECIAL_FUNC_LIST[i].second.second));
+            formula.erase(SPECIAL_FUNC_LIST[i].first.length());
+        }
+    }
+    while (formula.find("{") == 0) {
+        int brace = 0;
+        std::string term;
+        for (size_t index = 0; index < formula.length(); index++) {
+            if (formula[index] == '{') brace++;
+            if (formula[index] == '}') brace--;
+            if (brace == 0) {
+                term = formula.substr(1, index - 1);
+                formula = formula.substr(index + 1);
+                break;
+            }
+        }
+        ret.push_back(make_token(TK_OPEN_BRACE, "{", ""));
+        std::vector<Token> temp = make_tokens(term);
+        ret.insert(ret.end(), temp.begin(), temp.end());
+        ret.push_back(make_token(TK_CLOSE_BRACE, "}", ""));
+    }
+    return ret;
+}
 std::vector<Token> make_tokens(std::string& math_str) {
     std::string left = math_str;
     std::string right;
@@ -290,6 +381,7 @@ std::vector<Token> make_tokens(std::string& math_str) {
             return return_with_bracket(ret, need_bracket);
             break;
         case '@':
+            ret = parse_math_function(left);
             return return_with_bracket(ret, need_bracket);
             break;
         default:

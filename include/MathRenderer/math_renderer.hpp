@@ -66,7 +66,14 @@ class MathRenderer {
     int draw_special_objects(const std::vector<SpecialObject>& obj, int fbX1, int fbY1, int fbX2, int fbY2);
 };
 
-int shift_for_cursor(LayoutBox& box, const std::vector<Token>& cur_token, const int cursor, const int width, const int height, int& offsetX, int& offsetY);
+int shift_for_cursor(LayoutBox& box, const std::vector<Token>& cur_token, const int cursor, const int width,
+                     const int height, int& offsetX, int& offsetY);
+int ascent_for_symbol(int symbol, int scale);
+int descent_for_symbol(int symbol, int scale);
+int width_for_symbol(int symbol, int scale);
+int ascent_for_letters(const std::vector<int>& letters, int scale);
+int descent_for_letters(const std::vector<int>& letters, int scale);
+int width_for_letters(const std::vector<int>& letters, int scale);
 
 Token make_token(int type, const std::string& name, const std::vector<std::string>& letters);
 Token make_token(int type, const std::string& name, const std::string& letters);

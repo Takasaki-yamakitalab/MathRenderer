@@ -1,10 +1,12 @@
 #include "MathRenderer/math_renderer.hpp"
+#include "MathRenderer/math_renderer_defines.hpp"
 
 namespace math_renderer {
 Token make_token(int type, const std::string& name, const std::vector<std::string>& letters) {
     Token tok;
     tok.type = type;
     tok.m_math_str = name;
+    tok.can_be_pointed = true;
     for (int i = 0; i < letters.size(); i++) {
         int id = 0;
         for (id = 0; id < LETTER_NUM; id++) {
@@ -21,6 +23,7 @@ Token make_token(int type, const std::string& name, const std::string& letter) {
     Token tok;
     tok.type = type;
     tok.m_math_str = name;
+    tok.can_be_pointed = true;
     int id = 0;
     for (id = 0; id < LETTER_NUM; id++) {
         if (LETTERS[id] == letter) break;
@@ -33,6 +36,7 @@ Token make_token(int type, const std::string& name) {
     Token tok;
     tok.type = type;
     tok.m_math_str = name;
+    tok.can_be_pointed = true;
     int id = 0;
     for (id = 0; id < LETTER_NUM; id++) {
         if (LETTERS[id] == name) break;
@@ -44,46 +48,62 @@ Token make_token(int type, const std::string& name) {
 
 inline std::vector<Token> make_const_down_tokens(
     const std::string& value, const std::vector<std::string>& base, const std::vector<std::string>& sub) {
+    auto tk_base = make_token(TK_SYMBOL, value, base);
+    tk_base.can_be_pointed = false;
+    auto tk_sub = make_token(TK_SYMBOL, "", sub);
+    tk_sub.can_be_pointed = false;
     return {
         make_token(TK_DOWN, "\\down"),
         make_token(TK_OPEN_SQUARE, "["),
-        make_token(TK_SYMBOL, value, base),
+        tk_base,
         make_token(TK_CLOSE_SQUARE, "]"),
         make_token(TK_OPEN_SQUARE, "["),
-        make_token(TK_SYMBOL, "", sub),
+        tk_sub,
         make_token(TK_CLOSE_SQUARE, "]")};
 }
 inline std::vector<Token> make_const_down_tokens(
     const std::string& value, const std::string& base, const std::vector<std::string>& sub) {
+    auto tk_base = make_token(TK_SYMBOL, value, base);
+    tk_base.can_be_pointed = false;
+    auto tk_sub = make_token(TK_SYMBOL, "", sub);
+    tk_sub.can_be_pointed = false;
     return {
         make_token(TK_DOWN, "\\down"),
         make_token(TK_OPEN_SQUARE, "["),
-        make_token(TK_SYMBOL, value, base),
+        tk_base,
         make_token(TK_CLOSE_SQUARE, "]"),
         make_token(TK_OPEN_SQUARE, "["),
-        make_token(TK_SYMBOL, "", sub),
+        tk_sub,
         make_token(TK_CLOSE_SQUARE, "]")};
 }
 inline std::vector<Token> make_const_down_tokens(
     const std::string& value, const std::vector<std::string>& base, const std::string& sub) {
+    auto tk_base = make_token(TK_SYMBOL, value, base);
+    tk_base.can_be_pointed = false;
+    auto tk_sub = make_token(TK_SYMBOL, "", sub);
+    tk_sub.can_be_pointed = false;
     return {
         make_token(TK_DOWN, "\\down"),
         make_token(TK_OPEN_SQUARE, "["),
-        make_token(TK_SYMBOL, value, base),
+        tk_base,
         make_token(TK_CLOSE_SQUARE, "]"),
         make_token(TK_OPEN_SQUARE, "["),
-        make_token(TK_SYMBOL, "", sub),
+        tk_sub,
         make_token(TK_CLOSE_SQUARE, "]")};
 }
 inline std::vector<Token> make_const_down_tokens(
     const std::string& value, const std::string& base, const std::string& sub) {
+    auto tk_base = make_token(TK_SYMBOL, value, base);
+    tk_base.can_be_pointed = false;
+    auto tk_sub = make_token(TK_SYMBOL, "", sub);
+    tk_sub.can_be_pointed = false;
     return {
         make_token(TK_DOWN, "\\down"),
         make_token(TK_OPEN_SQUARE, "["),
-        make_token(TK_SYMBOL, value, base),
+        tk_base,
         make_token(TK_CLOSE_SQUARE, "]"),
         make_token(TK_OPEN_SQUARE, "["),
-        make_token(TK_SYMBOL, "", sub),
+        tk_sub,
         make_token(TK_CLOSE_SQUARE, "]")};
 }
 
@@ -217,7 +237,7 @@ static std::vector<Token> make_tokens_from_input(const std::string& input) {
 
     // greek letters
     for (int i = LETTER_CAP_ALPHA; i <= LETTER_OMEGA; i++) {
-        if (input == LETTERS[i]) return {make_token(TK_SYMBOL, input)};
+        if (input == LETTERS[i]) return {make_token(TK_SYMBOL, "~" + input, input)};
     }
 
     if (input == "comma") return {make_token(TK_SYMBOL, ",")};
@@ -382,53 +402,65 @@ int insert_input(std::vector<Token>& tokens, int& cursor, const std::string& inp
         return 0;
     }
 
-    int cur;
-    for (cur = cursor - 1; cur > 0; cur--) {
-        if (tokens[cur].type == TK_CLOSE_PARENTHESES) {
-            // if the cursor is on ')', then the "(***)" is included in the first argument.
-            int paren = 1;
-            int brace = 0;
-            for (; cur > 0; cur--) {
-                if (tokens[cur].type == TK_CLOSE_PARENTHESES) paren++;
-                if (tokens[cur].type == TK_OPEN_PARENTHESES) paren--;
-                if (tokens[cur].type == TK_CLOSE_BRACE) brace++;
-                if (tokens[cur].type == TK_OPEN_BRACE) brace--;
-                if (paren == 0 && brace == 0) break;
-                if (brace == 0 && tokens[cur - 1].type == TK_OPEN_BRACE) break;
-            }
-        }
-        if (tokens[cur].type == TK_CLOSE_BRACE) {
-            // if the cursor is on '}', then the "\***{***}{***}...{***}" is included in the first argument.
-            int brace = 1;
-            for (; cur > 0; cur--) {
-                if (tokens[cur].type == TK_CLOSE_BRACE) brace++;
-                if (tokens[cur].type == TK_OPEN_BRACE) brace--;
-                if (brace == 0 && tokens[cur].m_math_str.size() > 1 && tokens[cur].m_math_str[0] == '\\') break;
-            }
-        }
-        if (tokens[cur].type == TK_CLOSE_SQUARE) {
-            // if the cursor is on ']', the the "\***[***][***]...[***]" is included in the first argument.
-            int square = 1;
-            for (; cur > 0; cur--) {
-                if (tokens[cur].type == TK_CLOSE_SQUARE) square++;
-                if (tokens[cur].type == TK_OPEN_SQUARE) square--;
-                if (square == 0 && tokens[cur].m_math_str.size() > 1 && tokens[cur].m_math_str[0] == '\\') break;
-            }
-        }
-        if (cur == 0 ||
-            tokens[cur - 1].m_math_str == "+" ||
-            tokens[cur - 1].m_math_str == "-" ||
-            tokens[cur - 1].m_math_str == "*" ||
-            tokens[cur - 1].m_math_str == "/" ||
-            tokens[cur - 1].m_math_str[0] == '@' ||
-            tokens[cur - 1].type == TK_OPEN_PARENTHESES ||
-            tokens[cur - 1].type == TK_OPEN_BRACE ||
-            tokens[cur - 1].type == TK_OPEN_SQUARE) {
-            break;
+    int cur = cursor - 1;
+    if (tokens[cur].type == TK_CLOSE_PARENTHESES) {
+        // if the cursor is on ')', then the "(***)" is included in the first argument.
+        int paren = 1;
+        int brace = 0;
+        for (; cur > 0; cur--) {
+            if (tokens[cur].type == TK_CLOSE_PARENTHESES) paren++;
+            if (tokens[cur].type == TK_OPEN_PARENTHESES) paren--;
+            if (tokens[cur].type == TK_CLOSE_BRACE) brace++;
+            if (tokens[cur].type == TK_OPEN_BRACE) brace--;
+            if (paren == 0) break;
+            if (brace == 0 && tokens[cur - 1].type == TK_OPEN_BRACE) break;
         }
     }
+    else if (tokens[cur].type == TK_CLOSE_BRACE) {
+        // if the cursor is on '}', then the "\***{***}{***}...{***}" is included in the first argument.
+        int brace = 1;
+        for (; cur > 0; cur--) {
+            if (tokens[cur].type == TK_CLOSE_BRACE) brace++;
+            if (tokens[cur].type == TK_OPEN_BRACE) brace--;
+            if (brace == 0 && tokens[cur].m_math_str.size() > 1 && tokens[cur].m_math_str[0] == '\\') break;
+        }
+    }
+    else if (tokens[cur].type == TK_CLOSE_SQUARE) {
+        // if the cursor is on ']', the the "\***[***][***]...[***]" is included in the first argument.
+        int square = 1;
+        for (; cur > 0; cur--) {
+            if (tokens[cur].type == TK_CLOSE_SQUARE) square++;
+            if (tokens[cur].type == TK_OPEN_SQUARE) square--;
+            if (square == 0 && tokens[cur].m_math_str.size() > 1 && tokens[cur].m_math_str[0] == '\\') break;
+        }
+    }
+    else {
+        for (cur = cursor - 1; cur > 0; cur--) {
+            if (cur == 0 ||
+                tokens[cur - 1].m_math_str == "+" ||
+                tokens[cur - 1].m_math_str == "-" ||
+                tokens[cur - 1].m_math_str == "*" ||
+                tokens[cur - 1].m_math_str == "/" ||
+                tokens[cur - 1].m_math_str[0] == '@' ||
+                tokens[cur - 1].type == TK_OPEN_PARENTHESES ||
+                tokens[cur - 1].type == TK_OPEN_BRACE ||
+                tokens[cur - 1].type == TK_OPEN_SQUARE) {
+                break;
+            }
+        }
+        int i = cur;
+        for (i = cur; i < cursor; i++) {
+            if (tokens[i].m_letters.size() != 1) break;
+            if (LETTER_0 <= tokens[i].m_letters[0] && tokens[i].m_letters[0] <= LETTER_9) continue;
+            if (tokens[i].m_letters[0] == LETTER_PERIOD) continue;
+            break;
+        }
+        if (i != cur && i != cursor) cur = i;
+    }
+
     tokens.insert(tokens.begin() + cursor, spfunc_tokens.begin() + 2, spfunc_tokens.end());
     tokens.insert(tokens.begin() + cur, spfunc_tokens.begin(), spfunc_tokens.begin() + 2);
+
     cursor += 4;
     return 0;
 }
