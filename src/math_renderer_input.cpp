@@ -405,7 +405,7 @@ int insert_input(std::vector<Token>& tokens, int& cursor, const std::string& inp
     int cur = cursor - 1;
     if (tokens[cur].type == TK_CLOSE_PARENTHESES) {
         // if the cursor is on ')', then the "(***)" is included in the first argument.
-        int paren = 1;
+        int paren = 0;
         int brace = 0;
         for (; cur > 0; cur--) {
             if (tokens[cur].type == TK_CLOSE_PARENTHESES) paren++;
@@ -418,7 +418,7 @@ int insert_input(std::vector<Token>& tokens, int& cursor, const std::string& inp
     }
     else if (tokens[cur].type == TK_CLOSE_BRACE) {
         // if the cursor is on '}', then the "\***{***}{***}...{***}" is included in the first argument.
-        int brace = 1;
+        int brace = 0;
         for (; cur > 0; cur--) {
             if (tokens[cur].type == TK_CLOSE_BRACE) brace++;
             if (tokens[cur].type == TK_OPEN_BRACE) brace--;
@@ -427,7 +427,7 @@ int insert_input(std::vector<Token>& tokens, int& cursor, const std::string& inp
     }
     else if (tokens[cur].type == TK_CLOSE_SQUARE) {
         // if the cursor is on ']', the the "\***[***][***]...[***]" is included in the first argument.
-        int square = 1;
+        int square = 0;
         for (; cur > 0; cur--) {
             if (tokens[cur].type == TK_CLOSE_SQUARE) square++;
             if (tokens[cur].type == TK_OPEN_SQUARE) square--;
