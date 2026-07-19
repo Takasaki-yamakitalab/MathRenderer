@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include "bmp.hpp"
+#include <BitmapTool/bmp.hpp>
 #include "math_renderer_defines.hpp"
 
 namespace math_renderer {

@@ -10,8 +10,9 @@ if (ANDROID)
     set(CMAKE_ANDROID_STL_TYPE c++_static)
 endif()
 
+find_package(BitmapTool CONFIG REQUIRED)
+
 set(SRC
-    src/bmp.cpp
     src/math_renderer.cpp
     src/math_renderer_drawing.cpp
     src/math_renderer_input.cpp
@@ -34,6 +35,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
+target_link_libraries(${PROJECT_NAME}
+    PUBLIC BitmapTool::BitmapTool
+)
 
 include(GNUInstallDirs)
 install(TARGETS ${PROJECT_NAME}
@@ -55,7 +59,10 @@ include(CMakePackageConfigHelpers)
 file(WRITE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake.in
     "
 @PACKAGE_INIT@
+include(CMakeFindDependencyMacro)
+find_dependency(BitmapTool CONFIG REQUIRED)
 include(\${CMAKE_CURRENT_LIST_DIR}/${PROJECT_NAME}Targets.cmake)
+check_required_components(${PROJECT_NAME})
     "
 )
 configure_package_config_file(

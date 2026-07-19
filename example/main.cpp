@@ -1,5 +1,4 @@
 #include "../include/MathRenderer/math_renderer.hpp"
-#include "../include/MathRenderer/bmp.hpp"
 
 #include <stdio.h>
 #include <chrono>
