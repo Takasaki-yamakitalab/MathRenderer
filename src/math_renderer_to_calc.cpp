@@ -3,27 +3,6 @@
 #include <stdio.h>
 
 namespace math_renderer {
-static const std::vector<std::pair<std::string, std::vector<std::string>>> MATH_FUNC_NAME_LIST = {
-    { "@arcsinh",   {"a", "s", "i", "n"}},
-    { "@arccosh",   {}},
-    { "@arctanh",   {}},
-    { "@arcsin",    {}},
-    { "@arccos",    {}},
-    { "@arctan",    {}},
-    { "@gamma",     {}},
-    { "@sinh",      {}},
-    { "@cosh",      {}},
-    { "@tanh",      {}},
-    { "@sqrt",      {}},
-    { "@cbrt",      {}},
-    { "@sin",       {}},
-    { "@cos",       {}},
-    { "@tan",       {}},
-    { "@log",       {}},
-    { "@exp",       {}},
-    { "@ln",        {}},
-};
-
 int make_math_str(const std::vector<Token>& tokens, int& index, std::string& str) {
     while (index < tokens.size() && tokens[index].type != TK_CLOSE_BRACE && tokens[index].type != TK_CLOSE_SQUARE) {
         if (tokens[index].type == TK_OPEN_SQUARE ||
@@ -292,6 +271,17 @@ static std::vector<Token> parse_special_function(std::string& formula) {
     }
     return ret;
 }
+static std::string find_greek(const std::string& str) {
+    const std::vector<std::string> GREEK_LIST(&dot_font::LETTERS[dot_font::LETTER_CAP_ALPHA], &dot_font::LETTERS[dot_font::LETTER_OMEGA + 1]);
+    if (str[0] != '~') return "";
+    for (auto& greek : GREEK_LIST) {
+        if (str.find(greek) == 1) {
+            std::string ret = str.substr(1, greek.length());
+            return ret;
+        }
+    }
+    return "";
+}
 std::vector<Token> make_tokens(std::string& math_str) {
     std::string left = math_str;
     std::string right;
@@ -388,8 +378,16 @@ std::vector<Token> make_tokens(std::string& math_str) {
             break;
     }
 
-    for (auto& c : left) {
-        ret.push_back(make_token(TK_SYMBOL, {c}));
+    for (size_t i = 0; i < left.length(); i++) {
+        char c = left[i];
+        if (c != '~') {
+            ret.push_back(make_token(TK_SYMBOL, {c}));
+            continue;
+        }
+        std::string str = find_greek(left.substr(i));
+        if (str == "") continue;
+        ret.push_back(make_token(TK_SYMBOL, "~" + str, str));
+        i += str.size();
     }
     return return_with_bracket(ret, need_bracket);
 }
