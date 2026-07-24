@@ -6,7 +6,7 @@ namespace math_renderer {
         return 0;
     }
     int MathRenderer::draw_letter(int x, int y, int scale, int letter) {
-        if (letter >= LETTER_NUM) return 0;
+        if (letter >= dot_font::LETTER_NUM) return 0;
         bmp::drawGlyph(m_drawBuffer.data(), m_display_width, m_display_height, x, y, m_letters[letter], scale);
         return 0;
     }
@@ -42,41 +42,41 @@ namespace math_renderer {
             return 0;
         }
         if (obj.type == SPOBJ_SQRT_SYMBOL) {
-            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, m_display_height, obj.x1, obj.y1, m_letters[LETTER_SQRT],
+            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, m_display_height, obj.x1, obj.y1, m_letters[dot_font::LETTER_SQRT],
                 std::abs(obj.x2 - obj.x1), std::abs(obj.y2 - obj.y1));
             return 0;
         }
         if (obj.type == SPOBJ_EQUAL) {
-            bmp::drawGlyph(this->m_drawBuffer.data(), m_display_width, m_display_height, obj.x1, obj.y1, m_letters[LETTER_EQUAL], SMALL_SCALE);
+            bmp::drawGlyph(this->m_drawBuffer.data(), m_display_width, m_display_height, obj.x1, obj.y1, m_letters[dot_font::LETTER_EQUAL], SMALL_SCALE);
             return 0;
         }
         if (obj.type == SPOBJ_OPEN_BRACKET) {
-            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, m_display_height, obj.x1, obj.y1, m_letters[LETTER_OPEN_BRACKET],
+            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, m_display_height, obj.x1, obj.y1, m_letters[dot_font::LETTER_OPEN_BRACKET],
                 std::abs(obj.x2 - obj.x1), std::abs(obj.y2 - obj.y1));
             return 0;
         }
         if (obj.type == SPOBJ_CLOSE_BRACKET) {
-            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, m_display_height, obj.x1, obj.y1, m_letters[LETTER_CLOSE_BRACKET],
+            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, m_display_height, obj.x1, obj.y1, m_letters[dot_font::LETTER_CLOSE_BRACKET],
                 std::abs(obj.x2 - obj.x1), std::abs(obj.y2 - obj.y1));
             return 0;
         }
         if (obj.type == SPOBJ_INTEGRAL_SYMBOL) {
-            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, m_display_height, obj.x1, obj.y1, m_letters[LETTER_INTEGRAL],
+            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, m_display_height, obj.x1, obj.y1, m_letters[dot_font::LETTER_INTEGRAL],
                 std::abs(obj.x2 - obj.x1), std::abs(obj.y2 - obj.y1));
             return 0;
         }
         if (obj.type == SPOBJ_INTEGRAL_D) {
-            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, m_display_height, obj.x1, obj.y1, m_letters[LETTER_d],
+            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, m_display_height, obj.x1, obj.y1, m_letters[dot_font::LETTER_d],
                 std::abs(obj.x2 - obj.x1), std::abs(obj.y2 - obj.y1));
             return 0;
         }
         if (obj.type == SPOBJ_PERM_SYMBOL) {
-            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, m_display_height, obj.x1, obj.y1, m_letters[LETTER_P],
+            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, m_display_height, obj.x1, obj.y1, m_letters[dot_font::LETTER_P],
                 std::abs(obj.x2 - obj.x1), std::abs(obj.y2 - obj.y1));
             return 0;
         }
         if (obj.type == SPOBJ_COMB_SYMBOL) {
-            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, m_display_height, obj.x1, obj.y1, m_letters[LETTER_C],
+            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, m_display_height, obj.x1, obj.y1, m_letters[dot_font::LETTER_C],
                 std::abs(obj.x2 - obj.x1), std::abs(obj.y2 - obj.y1));
             return 0;
         }
@@ -90,7 +90,7 @@ namespace math_renderer {
     }
 
     int MathRenderer::draw_letter(int x, int y, int scale, int letter, int fbX1, int fbY1, int fbX2, int fbY2) {
-        if (letter >= LETTER_NUM) return 0;
+        if (letter >= dot_font::LETTER_NUM) return 0;
         bmp::drawGlyph(m_drawBuffer.data(), m_display_width, fbX1, fbY1, fbX2, fbY2, x, y, m_letters[letter], scale);
         return 0;
     }
@@ -125,41 +125,41 @@ namespace math_renderer {
             return 0;
         }
         if (obj.type == SPOBJ_SQRT_SYMBOL) {
-            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, fbX1, fbY1, fbX2, fbY2, obj.x1, obj.y1, m_letters[LETTER_SQRT],
+            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, fbX1, fbY1, fbX2, fbY2, obj.x1, obj.y1, m_letters[dot_font::LETTER_SQRT],
                 std::abs(obj.x2 - obj.x1), std::abs(obj.y2 - obj.y1));
             return 0;
         }
         if (obj.type == SPOBJ_EQUAL) {
-            bmp::drawGlyph(this->m_drawBuffer.data(), m_display_width, fbX1, fbY1, fbX2, fbY2, obj.x1, obj.y1, m_letters[LETTER_EQUAL], SMALL_SCALE);
+            bmp::drawGlyph(this->m_drawBuffer.data(), m_display_width, fbX1, fbY1, fbX2, fbY2, obj.x1, obj.y1, m_letters[dot_font::LETTER_EQUAL], SMALL_SCALE);
             return 0;
         }
         if (obj.type == SPOBJ_OPEN_BRACKET) {
-            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, fbX1, fbY1, fbX2, fbY2, obj.x1, obj.y1, m_letters[LETTER_OPEN_BRACKET],
+            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, fbX1, fbY1, fbX2, fbY2, obj.x1, obj.y1, m_letters[dot_font::LETTER_OPEN_BRACKET],
                 std::abs(obj.x2 - obj.x1), std::abs(obj.y2 - obj.y1));
             return 0;
         }
         if (obj.type == SPOBJ_CLOSE_BRACKET) {
-            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, fbX1, fbY1, fbX2, fbY2, obj.x1, obj.y1, m_letters[LETTER_CLOSE_BRACKET],
+            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, fbX1, fbY1, fbX2, fbY2, obj.x1, obj.y1, m_letters[dot_font::LETTER_CLOSE_BRACKET],
                 std::abs(obj.x2 - obj.x1), std::abs(obj.y2 - obj.y1));
             return 0;
         }
         if (obj.type == SPOBJ_INTEGRAL_SYMBOL) {
-            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, fbX1, fbY1, fbX2, fbY2, obj.x1, obj.y1, m_letters[LETTER_INTEGRAL],
+            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, fbX1, fbY1, fbX2, fbY2, obj.x1, obj.y1, m_letters[dot_font::LETTER_INTEGRAL],
                 std::abs(obj.x2 - obj.x1), std::abs(obj.y2 - obj.y1));
             return 0;
         }
         if (obj.type == SPOBJ_INTEGRAL_D) {
-            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, fbX1, fbY1, fbX2, fbY2, obj.x1, obj.y1, m_letters[LETTER_d],
+            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, fbX1, fbY1, fbX2, fbY2, obj.x1, obj.y1, m_letters[dot_font::LETTER_d],
                 std::abs(obj.x2 - obj.x1), std::abs(obj.y2 - obj.y1));
             return 0;
         }
         if (obj.type == SPOBJ_PERM_SYMBOL) {
-            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, fbX1, fbY1, fbX2, fbY2, obj.x1, obj.y1, m_letters[LETTER_P],
+            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, fbX1, fbY1, fbX2, fbY2, obj.x1, obj.y1, m_letters[dot_font::LETTER_P],
                 std::abs(obj.x2 - obj.x1), std::abs(obj.y2 - obj.y1));
             return 0;
         }
         if (obj.type == SPOBJ_COMB_SYMBOL) {
-            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, fbX1, fbY1, fbX2, fbY2, obj.x1, obj.y1, m_letters[LETTER_C],
+            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, fbX1, fbY1, fbX2, fbY2, obj.x1, obj.y1, m_letters[dot_font::LETTER_C],
                 std::abs(obj.x2 - obj.x1), std::abs(obj.y2 - obj.y1));
             return 0;
         }

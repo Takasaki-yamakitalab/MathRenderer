@@ -12,6 +12,7 @@ if (ANDROID)
 endif()
 
 find_package(BitmapTool CONFIG REQUIRED)
+find_package(DotFont CONFIG REQUIRED)
 
 set(SRC
     src/math_renderer.cpp
@@ -37,7 +38,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     $<INSTALL_INTERFACE:include>
 )
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC BitmapTool::BitmapTool
+    PUBLIC
+    BitmapTool::BitmapTool
+    DotFont::DotFont
 )
 
 include(GNUInstallDirs)
@@ -62,6 +65,7 @@ file(WRITE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake.in
 @PACKAGE_INIT@
 include(CMakeFindDependencyMacro)
 find_dependency(BitmapTool CONFIG REQUIRED)
+find_dependency(DotFont CONFIG REQUIRED)
 include(\${CMAKE_CURRENT_LIST_DIR}/${PROJECT_NAME}Targets.cmake)
 check_required_components(${PROJECT_NAME})
     "

@@ -370,7 +370,7 @@ LayoutBox LayoutEngine::parse_diff(int& pos, int scale) {
     int body_offset = var_offset + var.width + FRAC_SIDE_MARGIN * scale + FRAC_SIDE_PADDING * scale;
     int x_offsetX = body_offset + body.width + 3 * scale;
 
-    int num_offset = descent_for_symbol(LETTER_d, scale) + FRAC_GAP * scale / 2;
+    int num_offset = descent_for_symbol(dot_font::LETTER_d, scale) + FRAC_GAP * scale / 2;
     int den_offset = var.ascent + FRAC_GAP * scale / 2;
     int frac_width = body_offset;
 
@@ -382,7 +382,7 @@ LayoutBox LayoutEngine::parse_diff(int& pos, int scale) {
 
     LayoutBox result;
     result.width = x_offsetX + x.width;
-    result.ascent = std::max(body.ascent, num_offset + ascent_for_symbol(LETTER_d, scale));
+    result.ascent = std::max(body.ascent, num_offset + ascent_for_symbol(dot_font::LETTER_d, scale));
     result.descent = std::max(body.descent, den_offset + var.descent);
 
     SpecialObject obj;
@@ -395,7 +395,7 @@ LayoutBox LayoutEngine::parse_diff(int& pos, int scale) {
 
     obj.type = SPOBJ_INTEGRAL_D;
     obj.x1 = (body_offset - width_for_scale(scale) - var.width) / 2;
-    obj.y1 = den_offset - std::max(ascent_for_symbol(LETTER_d, scale), var.ascent);
+    obj.y1 = den_offset - std::max(ascent_for_symbol(dot_font::LETTER_d, scale), var.ascent);
     obj.x2 = obj.x1 + width_for_scale(scale);
     obj.y2 = obj.y1 + BASE_H * scale;
     result.spobj.push_back(obj);
@@ -432,8 +432,8 @@ LayoutBox LayoutEngine::parse_perm(int& pos, int scale) {
     LayoutBox left = parse_group(pos, SMALL_SCALE);
     LayoutBox right = parse_group(pos, SMALL_SCALE);
 
-    int left_offsetY = descent_for_symbol(LETTER_P, scale) + left.ascent - SUB_OFFSET;
-    int right_offsetY = descent_for_symbol(LETTER_P, scale) + right.ascent - SUB_OFFSET;
+    int left_offsetY = descent_for_symbol(dot_font::LETTER_P, scale) + left.ascent - SUB_OFFSET;
+    int right_offsetY = descent_for_symbol(dot_font::LETTER_P, scale) + right.ascent - SUB_OFFSET;
     int symbol_offset = left.width;
     int right_offsetX = symbol_offset + width_for_scale(scale);
     left.shift(0, left_offsetY);
@@ -441,7 +441,7 @@ LayoutBox LayoutEngine::parse_perm(int& pos, int scale) {
 
     LayoutBox result;
     result.width = left.width + width_for_scale(scale) + right.width;
-    result.ascent = ascent_for_symbol(LETTER_P, scale);
+    result.ascent = ascent_for_symbol(dot_font::LETTER_P, scale);
     result.descent = std::max(left_offsetY + left.descent, right_offsetY + right.descent);
 
     SpecialObject obj;
@@ -462,8 +462,8 @@ LayoutBox LayoutEngine::parse_comb(int& pos, int scale) {
     LayoutBox left = parse_group(pos, SMALL_SCALE);
     LayoutBox right = parse_group(pos, SMALL_SCALE);
 
-    int left_offsetY = descent_for_symbol(LETTER_C, scale) + left.ascent - SUB_OFFSET;
-    int right_offsetY = descent_for_symbol(LETTER_C, scale) + right.ascent - SUB_OFFSET;
+    int left_offsetY = descent_for_symbol(dot_font::LETTER_C, scale) + left.ascent - SUB_OFFSET;
+    int right_offsetY = descent_for_symbol(dot_font::LETTER_C, scale) + right.ascent - SUB_OFFSET;
     int symbol_offset = left.width;
     int right_offsetX = symbol_offset + width_for_scale(scale);
     left.shift(0, left_offsetY);
@@ -471,7 +471,7 @@ LayoutBox LayoutEngine::parse_comb(int& pos, int scale) {
 
     LayoutBox result;
     result.width = left.width + width_for_scale(scale) + right.width;
-    result.ascent = ascent_for_symbol(LETTER_C, scale);
+    result.ascent = ascent_for_symbol(dot_font::LETTER_C, scale);
     result.descent = std::max(left_offsetY + left.descent, right_offsetY + right.descent);
 
     SpecialObject obj;
@@ -561,25 +561,25 @@ int ascent_for_symbol(int symbol, int scale) {
 }
 int descent_for_symbol(int symbol, int scale) {
     switch (symbol) {
-        case LETTER_g:
-        case LETTER_j:
-        case LETTER_p:
-        case LETTER_q:
-        case LETTER_y:
-        case LETTER_BETA:
-        case LETTER_GAMMA:
-        case LETTER_ZETA:
-        case LETTER_ETA:
-        case LETTER_MU:
-        case LETTER_XI:
-        case LETTER_RHO:
-        case LETTER_PHI:
-        case LETTER_CHI:
-        case LETTER_PSI:
-        case LETTER_SQRT:
-        case LETTER_OPEN_PARENTHESES:
-        case LETTER_CLOSE_PARENTHESES:
-        case LETTER_INTEGRAL:
+        case dot_font::LETTER_g:
+        case dot_font::LETTER_j:
+        case dot_font::LETTER_p:
+        case dot_font::LETTER_q:
+        case dot_font::LETTER_y:
+        case dot_font::LETTER_BETA:
+        case dot_font::LETTER_GAMMA:
+        case dot_font::LETTER_ZETA:
+        case dot_font::LETTER_ETA:
+        case dot_font::LETTER_MU:
+        case dot_font::LETTER_XI:
+        case dot_font::LETTER_RHO:
+        case dot_font::LETTER_PHI:
+        case dot_font::LETTER_CHI:
+        case dot_font::LETTER_PSI:
+        case dot_font::LETTER_SQRT:
+        case dot_font::LETTER_OPEN_PARENTHESES:
+        case dot_font::LETTER_CLOSE_PARENTHESES:
+        case dot_font::LETTER_INTEGRAL:
             return descent_for_scale(scale);
     }
     return descent_for_scale(scale) - 4 * scale;

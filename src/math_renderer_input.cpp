@@ -9,8 +9,8 @@ Token make_token(int type, const std::string& name, const std::vector<std::strin
     tok.can_be_pointed = true;
     for (int i = 0; i < letters.size(); i++) {
         int id = 0;
-        for (id = 0; id < LETTER_NUM; id++) {
-            if (LETTERS[id] == letters[i]) {
+        for (id = 0; id < dot_font::LETTER_NUM; id++) {
+            if (dot_font::LETTERS[id] == letters[i]) {
                 tok.m_letters.push_back(id);
                 break;
             }
@@ -25,8 +25,8 @@ Token make_token(int type, const std::string& name, const std::string& letter) {
     tok.m_math_str = name;
     tok.can_be_pointed = true;
     int id = 0;
-    for (id = 0; id < LETTER_NUM; id++) {
-        if (LETTERS[id] == letter) break;
+    for (id = 0; id < dot_font::LETTER_NUM; id++) {
+        if (dot_font::LETTERS[id] == letter) break;
     }
     tok.m_letters.push_back(id);
     return tok;
@@ -38,8 +38,8 @@ Token make_token(int type, const std::string& name) {
     tok.m_math_str = name;
     tok.can_be_pointed = true;
     int id = 0;
-    for (id = 0; id < LETTER_NUM; id++) {
-        if (LETTERS[id] == name) break;
+    for (id = 0; id < dot_font::LETTER_NUM; id++) {
+        if (dot_font::LETTERS[id] == name) break;
     }
     if (name != "{" && name != "}" && name != "[" && name != "]" && name[0] != '\\')
         tok.m_letters.push_back(id);
@@ -236,8 +236,8 @@ static std::vector<Token> make_tokens_from_input(const std::string& input) {
     if (input == "deg") return {make_token(TK_SYMBOL, "*(@arccos(-1)/180)", "deg")};
 
     // greek letters
-    for (int i = LETTER_CAP_ALPHA; i <= LETTER_OMEGA; i++) {
-        if (input == LETTERS[i]) return {make_token(TK_SYMBOL, "~" + input, input)};
+    for (int i = dot_font::LETTER_CAP_ALPHA; i <= dot_font::LETTER_OMEGA; i++) {
+        if (input == dot_font::LETTERS[i]) return {make_token(TK_SYMBOL, "~" + input, input)};
     }
 
     if (input == "comma") return {make_token(TK_SYMBOL, ",")};
@@ -451,8 +451,8 @@ int insert_input(std::vector<Token>& tokens, int& cursor, const std::string& inp
         int i = cur;
         for (i = cur; i < cursor; i++) {
             if (tokens[i].m_letters.size() != 1) break;
-            if (LETTER_0 <= tokens[i].m_letters[0] && tokens[i].m_letters[0] <= LETTER_9) continue;
-            if (tokens[i].m_letters[0] == LETTER_PERIOD) continue;
+            if (dot_font::LETTER_0 <= tokens[i].m_letters[0] && tokens[i].m_letters[0] <= dot_font::LETTER_9) continue;
+            if (tokens[i].m_letters[0] == dot_font::LETTER_PERIOD) continue;
             break;
         }
         if (i != cur && i != cursor) cur = i;

@@ -45,6 +45,7 @@ class MathRenderer {
    public:
     MathRenderer(int width, int height);
     ~MathRenderer();
+    int load_glyph();
     int load_glyph(const std::string& fname);
     int load_glyph_list(const std::vector<bmp::Glyph>& glyph_list);
     int init_letter_list();
