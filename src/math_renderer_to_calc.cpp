@@ -314,10 +314,12 @@ std::vector<Token> make_tokens(std::string& math_str) {
         std::vector<Token> ret = {
             make_token(TK_FRAC, "\\frac", ""),
             make_token(TK_OPEN_BRACE, "{", "")};
+        left = rm_brackets(left);
         std::vector<Token> temp = make_tokens(left);
         ret.insert(ret.end(), temp.begin(), temp.end());
         ret.push_back(make_token(TK_CLOSE_BRACE, "}", ""));
         ret.push_back(make_token(TK_OPEN_BRACE, "{", ""));
+        right = rm_brackets(right);
         temp = make_tokens(right);
         ret.insert(ret.end(), temp.begin(), temp.end());
         ret.push_back(make_token(TK_CLOSE_BRACE, "}", ""));
@@ -332,6 +334,7 @@ std::vector<Token> make_tokens(std::string& math_str) {
         ret.insert(ret.end(), temp.begin(), temp.end());
         ret.push_back(make_token(TK_CLOSE_BRACE, "}", ""));
         ret.push_back(make_token(TK_OPEN_BRACE, "{", ""));
+        right = rm_brackets(right);
         temp = make_tokens(right);
         ret.insert(ret.end(), temp.begin(), temp.end());
         ret.push_back(make_token(TK_CLOSE_BRACE, "}", ""));
@@ -346,6 +349,7 @@ std::vector<Token> make_tokens(std::string& math_str) {
         ret.insert(ret.end(), temp.begin(), temp.end());
         ret.push_back(make_token(TK_CLOSE_BRACE, "}", ""));
         ret.push_back(make_token(TK_OPEN_BRACE, "{", ""));
+        right = rm_brackets(right);
         temp = make_tokens(right);
         ret.insert(ret.end(), temp.begin(), temp.end());
         ret.push_back(make_token(TK_CLOSE_BRACE, "}", ""));
