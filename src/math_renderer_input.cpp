@@ -512,6 +512,9 @@ int process_input(std::vector<Token>& tokens, int& cursor, const std::string& in
     if (input == "expand") {
         return 3;
     }
+    if (input == "factor") {
+        return 4;
+    }
     if (input == "left") {
         return move_cursor_horizontal(tokens, cursor, -1);
     }
