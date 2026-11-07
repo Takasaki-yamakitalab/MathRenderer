@@ -65,6 +65,12 @@ LayoutBox LayoutEngine::parse_elem(int& pos, int scale) {
             return parse_comb(pos, scale);
         case TK_LOG:
             return parse_log(pos, scale);
+        case TK_DEFUNC:
+            return parse_defunc(pos, scale);
+        case TK_CFUNC:
+            return parse_cfunc(pos, scale);
+        case TK_ABS:
+            return parse_abs(pos, scale);
         default:
             pos++;
             return LayoutBox{};
@@ -524,6 +530,122 @@ LayoutBox LayoutEngine::parse_log(int& pos, int scale) {
     return result;
 }
 
+LayoutBox LayoutEngine::parse_defunc(int& pos, int scale) {
+    LayoutBox head = parse_symbol(pos, scale);
+    LayoutBox fname = parse_group(pos, scale);
+    LayoutBox args = parse_group(pos, scale);
+    LayoutBox body = parse_group(pos, scale);
+
+    int args_offset = fname.width + width_for_scale(scale);
+    int body_offset = args_offset + args.width + 3 * width_for_scale(scale);
+    args.shift(args_offset, 0);
+    body.shift(body_offset, 0);
+
+    LayoutBox result;
+    result.width = fname.width + width_for_scale(scale) + args.width + 3 * width_for_scale(scale) + body.width + width_for_scale(scale);
+    result.ascent = std::max(fname.ascent, std::max(args.ascent, body.ascent));
+    result.descent = std::max(fname.descent, std::max(args.descent, body.descent));
+
+    SpecialObject obj;
+    obj.type = SPOBJ_OPEN_BRACKET;
+    obj.x1 = fname.width;
+    obj.y1 = -args.ascent;
+    obj.x2 = obj.x1 + width_for_scale(scale);
+    obj.y2 = args.descent;
+    result.spobj.push_back(obj);
+
+    obj.type = SPOBJ_CLOSE_BRACKET;
+    obj.x1 += args.width + width_for_scale(scale);
+    obj.x2 += args.width + width_for_scale(scale);
+    result.spobj.push_back(obj);
+
+    obj.type = SPOBJ_EQUAL;
+    obj.x1 += width_for_scale(scale);
+    obj.x2 += width_for_scale(scale);
+    result.spobj.push_back(obj);
+
+    obj.type = SPOBJ_OPEN_BRACKET;
+    obj.x1 = body_offset - width_for_scale(scale);
+    obj.x2 = body_offset;
+    obj.y1 = -body.ascent;
+    obj.y2 = body.descent;
+    result.spobj.push_back(obj);
+
+    obj.type = SPOBJ_CLOSE_BRACKET;
+    obj.x1 += body.width + width_for_scale(scale);
+    obj.x2 += body.width + width_for_scale(scale);
+    result.spobj.push_back(obj);
+
+    result.merge(head);
+    result.merge(fname);
+    result.merge(args);
+    result.merge(body);
+    return result;
+}
+
+LayoutBox LayoutEngine::parse_cfunc(int& pos, int scale) {
+    LayoutBox head = parse_symbol(pos, scale);
+    LayoutBox fname = parse_group(pos, scale);
+    LayoutBox args = parse_group(pos, scale);
+
+    int args_offset = fname.width + width_for_scale(scale);
+    args.shift(args_offset, 0);
+
+    LayoutBox result;
+    result.width = fname.width + width_for_scale(scale) + args.width + width_for_scale(scale);
+    result.ascent = std::max(fname.ascent, args.ascent);
+    result.descent = std::max(fname.descent, args.descent);
+
+    SpecialObject obj;
+    obj.type = SPOBJ_OPEN_BRACKET;
+    obj.x1 = fname.width;
+    obj.y1 = -args.ascent;
+    obj.x2 = obj.x1 + width_for_scale(scale);
+    obj.y2 = args.descent;
+    result.spobj.push_back(obj);
+
+    obj.type = SPOBJ_CLOSE_BRACKET;
+    obj.x1 += args.width + width_for_scale(scale);
+    obj.x2 += args.width + width_for_scale(scale);
+    result.spobj.push_back(obj);
+
+    result.merge(head);
+    result.merge(fname);
+    result.merge(args);
+    return result;
+}
+
+LayoutBox LayoutEngine::parse_abs(int& pos, int scale) {
+    LayoutBox head = parse_symbol(pos, scale);
+    LayoutBox body = parse_group(pos, scale);
+    int body_offset = 3 * scale;
+
+    body.shift(body_offset, 0);
+
+    int width = body_offset + body.width + body_offset;
+
+    LayoutBox result;
+    result.width = width;
+    result.ascent = body.ascent;
+    result.descent = body.descent;
+
+    SpecialObject obj;
+    obj.type = SPOBJ_FRAC_BAR;
+    obj.x1 = 1 * scale;
+    obj.y1 = -result.ascent + 2 * scale;
+    obj.x2 = obj.x1;
+    obj.y2 = result.descent - 2 * scale;
+    result.spobj.push_back(obj);
+
+    obj.x1 = body_offset + body.width + 1 * scale;
+    obj.x2 = obj.x1;
+    result.spobj.push_back(obj);
+
+    result.merge(head);
+    result.merge(body);
+
+    return result;
+}
 int shift_for_cursor(LayoutBox& box, const std::vector<Token>& tokens, const int cursor, const int width,
                      const int height, int& offsetX, int& offsetY) {
     int x1 = box.width + offsetX;

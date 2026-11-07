@@ -260,12 +260,15 @@ inline Token make_special_function_head_token(const std::string& input) {
     if (input == "sf_perm") return make_token(TK_PERM, "\\perm", "");
     if (input == "sf_comb") return make_token(TK_COMB, "\\comb", "");
     if (input == "sf_log") return make_token(TK_LOG, "\\log", {"l", "o", "g"});
+    if (input == "sf_defunc") return make_token(TK_DEFUNC, "\\defunc", "");
+    if (input == "sf_cfunc") return make_token(TK_CFUNC, "\\cfunc", "");
+    if (input == "sf_abs") return make_token(TK_ABS, "\\abs", "");
     return Token();
 }
 
 inline std::vector<Token> make_special_function_tokens(const std::string& input) {
     if (input.find("sf_") != 0) return {};
-    if (input == "sf_sqrt") {
+    if (input == "sf_sqrt" || input == "sf_abs") {
         return {
             make_special_function_head_token(input),
             make_token(TK_OPEN_BRACE, "{", ""),
@@ -276,7 +279,8 @@ inline std::vector<Token> make_special_function_tokens(const std::string& input)
         input == "sf_frac" ||
         input == "sf_perm" ||
         input == "sf_comb" ||
-        input == "sf_log") {
+        input == "sf_log" ||
+        input == "sf_cfunc") {
         return {
             make_special_function_head_token(input),
             make_token(TK_OPEN_BRACE, "{", ""),
@@ -284,7 +288,7 @@ inline std::vector<Token> make_special_function_tokens(const std::string& input)
             make_token(TK_OPEN_BRACE, "{", ""),
             make_token(TK_CLOSE_BRACE, "}", "")};
     }
-    if (input == "sf_diff") {
+    if (input == "sf_diff" || input == "sf_defunc") {
         return {
             make_special_function_head_token(input),
             make_token(TK_OPEN_BRACE, "{", ""),
@@ -387,6 +391,9 @@ int insert_input(std::vector<Token>& tokens, int& cursor, const std::string& inp
         input == "sf_int" ||
         input == "sf_diff" ||
         input == "sf_log" ||
+        input == "sf_defunc" ||
+        input == "sf_cfunc" ||
+        input == "sf_abs" ||
         tokens[cursor - 1].m_math_str == "+" ||
         tokens[cursor - 1].m_math_str == "-" ||
         tokens[cursor - 1].m_math_str == "*" ||

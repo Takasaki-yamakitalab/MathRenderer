@@ -27,6 +27,9 @@ enum TOKEN_TYPE {
     TK_PERM,
     TK_COMB,
     TK_LOG,
+    TK_DEFUNC,
+    TK_CFUNC,
+    TK_ABS,
 };
 enum SPOBJ_TYPE {
     SPOBJ_EMPTY,

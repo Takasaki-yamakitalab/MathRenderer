@@ -116,6 +116,55 @@ int make_math_str(const std::vector<Token>& tokens, int& index, std::string& str
             str += "}";
             continue;
         }
+        if (tokens[index].type == TK_DEFUNC) {
+            str += tokens[index++].m_math_str;
+            index++;  // skip "{"
+            str += "{";
+            make_math_str(tokens, index, str);  // arg1 (fname)
+            index += 2;                         // skip "}" and "{"
+            str += "}{";
+            std::string buff;
+            make_math_str(tokens, index, buff);  // arg2 (args)
+            for (const auto& c : buff) {
+                if (c == ',') {
+                    str += "}{";
+                }
+                else str += c;
+            }
+            index += 2;                         // skip "}" and "{"
+            str += "}{";
+            make_math_str(tokens, index, str);  // arg3 (body)
+            index++;                            // skip "}"
+            str += "}";
+            continue;
+        }
+        if (tokens[index].type == TK_CFUNC) {
+            str += tokens[index++].m_math_str;
+            index++;  // skip "{"
+            str += "{";
+            make_math_str(tokens, index, str);  // arg1 (fname)
+            index += 2;                         // skip "}" and "{"
+            str += "}{";
+            std::string buff;
+            make_math_str(tokens, index, buff);  // arg2 (args)
+            for (const auto& c : buff) {
+                if (c == ',') {
+                    str += "}{";
+                }
+                else str += c;
+            }
+            index++;                            // skip "}"
+            str += "}";
+            continue;
+        }
+        if (tokens[index].type == TK_ABS) {
+            index += 2;  // skip "\sqrt" and "{"
+            str += "\\abs{";
+            make_math_str(tokens, index, str);
+            index++;  // skip "}"
+            str += "}";
+            continue;
+        }
     }
     return 0;
 }

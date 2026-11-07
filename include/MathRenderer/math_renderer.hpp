@@ -32,6 +32,9 @@ class LayoutEngine {
     LayoutBox parse_perm(int& pos, int scale);
     LayoutBox parse_comb(int& pos, int scale);
     LayoutBox parse_log(int& pos, int scale);
+    LayoutBox parse_defunc(int& pos, int scale);
+    LayoutBox parse_cfunc(int& pos, int scale);
+    LayoutBox parse_abs(int& pos, int scale);
 };
 
 class MathRenderer {

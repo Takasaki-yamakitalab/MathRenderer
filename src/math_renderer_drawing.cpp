@@ -47,7 +47,8 @@ namespace math_renderer {
             return 0;
         }
         if (obj.type == SPOBJ_EQUAL) {
-            bmp::drawGlyph(this->m_drawBuffer.data(), m_display_width, m_display_height, obj.x1, obj.y1, m_letters[dot_font::LETTER_EQUAL], SMALL_SCALE);
+            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, m_display_height, obj.x1, obj.y1, m_letters[dot_font::LETTER_EQUAL],
+                std::abs(obj.x2 - obj.x1), std::abs(obj.y2 - obj.y1));
             return 0;
         }
         if (obj.type == SPOBJ_OPEN_BRACKET) {
@@ -130,7 +131,8 @@ namespace math_renderer {
             return 0;
         }
         if (obj.type == SPOBJ_EQUAL) {
-            bmp::drawGlyph(this->m_drawBuffer.data(), m_display_width, fbX1, fbY1, fbX2, fbY2, obj.x1, obj.y1, m_letters[dot_font::LETTER_EQUAL], SMALL_SCALE);
+            bmp::drawExtendGlyph(this->m_drawBuffer.data(), m_display_width, fbX1, fbY1, fbX2, fbY2, obj.x1, obj.y1, m_letters[dot_font::LETTER_EQUAL],
+                std::abs(obj.x2 - obj.x1), std::abs(obj.y2 - obj.y1));
             return 0;
         }
         if (obj.type == SPOBJ_OPEN_BRACKET) {
