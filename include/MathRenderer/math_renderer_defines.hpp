@@ -3,7 +3,6 @@
 
 #include <string>
 #include <vector>
-#include <memory>
 #include <DotFont/dot_font.hpp>
 
 namespace math_renderer {

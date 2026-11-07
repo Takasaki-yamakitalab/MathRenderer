@@ -618,7 +618,7 @@ LayoutBox LayoutEngine::parse_cfunc(int& pos, int scale) {
 LayoutBox LayoutEngine::parse_abs(int& pos, int scale) {
     LayoutBox head = parse_symbol(pos, scale);
     LayoutBox body = parse_group(pos, scale);
-    int body_offset = 3 * scale;
+    int body_offset = 7 * scale;
 
     body.shift(body_offset, 0);
 
@@ -626,20 +626,28 @@ LayoutBox LayoutEngine::parse_abs(int& pos, int scale) {
 
     LayoutBox result;
     result.width = width;
-    result.ascent = body.ascent;
-    result.descent = body.descent;
+    result.ascent = body.ascent + 2 * scale;
+    result.descent = body.descent + 2 * scale;
 
     SpecialObject obj;
     obj.type = SPOBJ_FRAC_BAR;
-    obj.x1 = 1 * scale;
-    obj.y1 = -result.ascent + 2 * scale;
+    obj.x1 = 4 * scale;
+    obj.y1 = -body.ascent;
     obj.x2 = obj.x1;
-    obj.y2 = result.descent - 2 * scale;
-    result.spobj.push_back(obj);
+    obj.y2 = body.descent;
+    for (int i = 0; i < scale; i++) {
+        obj.x1++;
+        obj.x2++;
+        result.spobj.push_back(obj);
+    }
 
-    obj.x1 = body_offset + body.width + 1 * scale;
+    obj.x1 = body_offset + body.width + 2 * scale;
     obj.x2 = obj.x1;
-    result.spobj.push_back(obj);
+    for (int i = 0; i < scale; i++) {
+        obj.x1++;
+        obj.x2++;
+        result.spobj.push_back(obj);
+    }
 
     result.merge(head);
     result.merge(body);

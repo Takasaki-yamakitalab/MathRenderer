@@ -159,10 +159,10 @@ int make_math_str(const std::vector<Token>& tokens, int& index, std::string& str
         }
         if (tokens[index].type == TK_ABS) {
             index += 2;  // skip "\sqrt" and "{"
-            str += "\\abs{";
+            str += "@abs(";
             make_math_str(tokens, index, str);
             index++;  // skip "}"
-            str += "}";
+            str += ")";
             continue;
         }
     }
