@@ -24,7 +24,7 @@ int make_math_str(const std::vector<Token>& tokens, int& index, std::string& str
             make_math_str(tokens, index, str);
             index += 2;  // skip "}" and "{"
             str += ")^(";
-            int size = str.size();
+            size_t size = str.size();
             make_math_str(tokens, index, str);
             index++;  // skip "}"
             if (size == str.size()) {
@@ -39,7 +39,7 @@ int make_math_str(const std::vector<Token>& tokens, int& index, std::string& str
             make_math_str(tokens, index, str);
             index += 2;  // skip "}" and "{"
             str += "_";
-            int size = str.size();
+            size_t size = str.size();
             make_math_str(tokens, index, str);
             index++;  // skip "}"
             if (size == str.size()) {
@@ -280,44 +280,6 @@ static std::vector<Token> parse_math_function(std::string& formula) {
     }
     std::vector<Token> temp = make_tokens(formula);
     ret.insert(ret.end(), temp.begin(), temp.end());
-    return ret;
-}
-static std::vector<Token> parse_special_function(std::string& formula) {
-    const std::vector<std::pair<std::string, std::pair<int, std::vector<std::string>>>> SPECIAL_FUNC_LIST = {
-        { "\\prod", { TK_PROD, { "Pi" } }},
-        { "\\perm", { TK_PERM, { "" } }},
-        { "\\comb", { TK_COMB, { "" } }},
-        { "\\diff", { TK_DIFF, { "" } }},
-        { "\\frac", { TK_FRAC, { "" } }},
-        { "\\sum",  { TK_SUM, { "Sigma" } }},
-        { "\\int",  { TK_INT, { "" } }},
-        { "\\log",  { TK_LOG, { "l", "o", "g" } }},
-    };
-
-    std::vector<Token> ret;
-    for (size_t i = 0; i < SPECIAL_FUNC_LIST.size(); i++) {
-        if (formula.find(SPECIAL_FUNC_LIST[i].first) == 0) {
-            ret.push_back(make_token(SPECIAL_FUNC_LIST[i].second.first, SPECIAL_FUNC_LIST[i].first, SPECIAL_FUNC_LIST[i].second.second));
-            formula.erase(SPECIAL_FUNC_LIST[i].first.length());
-        }
-    }
-    while (formula.find("{") == 0) {
-        int brace = 0;
-        std::string term;
-        for (size_t index = 0; index < formula.length(); index++) {
-            if (formula[index] == '{') brace++;
-            if (formula[index] == '}') brace--;
-            if (brace == 0) {
-                term = formula.substr(1, index - 1);
-                formula = formula.substr(index + 1);
-                break;
-            }
-        }
-        ret.push_back(make_token(TK_OPEN_BRACE, "{", ""));
-        std::vector<Token> temp = make_tokens(term);
-        ret.insert(ret.end(), temp.begin(), temp.end());
-        ret.push_back(make_token(TK_CLOSE_BRACE, "}", ""));
-    }
     return ret;
 }
 static std::string find_greek(const std::string& str) {

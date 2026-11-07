@@ -201,8 +201,6 @@ LayoutBox LayoutEngine::parse_frac(int& pos, int scale) {
     LayoutBox num = parse_group(pos, scale);
     LayoutBox den = parse_group(pos, scale);
     int width = std::max(num.width, den.width) + scale * FRAC_SIDE_PADDING * 2 + scale * FRAC_SIDE_MARGIN * 2;
-    int num_h = num.ascent + num.descent;
-    int den_h = den.ascent + den.descent;
     int num_offset = num.descent + FRAC_GAP * scale / 2;
     int den_offset = den.ascent + FRAC_GAP * scale / 2;
     num.shift((width - num.width) / 2, -num_offset);
@@ -233,7 +231,6 @@ LayoutBox LayoutEngine::parse_frac(int& pos, int scale) {
 LayoutBox LayoutEngine::parse_sqrt(int& pos, int scale) {
     LayoutBox head = parse_symbol(pos, scale);
     LayoutBox body = parse_group(pos, scale);
-    int bodyHeight = body.ascent + body.descent;
 
     body.shift(ROOT_SYMBOL_WIDTH * scale, 0);
 

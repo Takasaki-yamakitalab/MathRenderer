@@ -320,7 +320,7 @@ int move_cursor_horizontal(const std::vector<Token>& tokens, int& cursor, int di
     if (dir > 0) {
         cursor++;
         if (cursor > tokens.size()) {
-            cursor = tokens.size();
+            cursor = (int)tokens.size();
             return 0;
         }
         while (cursor < tokens.size() && tokens[cursor].type == TK_OPEN_BRACE) {
@@ -368,7 +368,7 @@ int move_cursor_horizontal(const std::vector<Token>& tokens, int& cursor, int di
         }
     }
     if (cursor < 0) cursor = 0;
-    if (tokens.size() < cursor) cursor = tokens.size();
+    if (tokens.size() < cursor) cursor = (int)tokens.size();
     return 0;
 }
 
@@ -378,7 +378,7 @@ int insert_input(std::vector<Token>& tokens, int& cursor, const std::string& inp
         std::vector<Token> temp = make_tokens_from_input(input);
         if (temp.empty()) return -1;
         tokens.insert(tokens.begin() + cursor, temp.begin(), temp.end());
-        cursor += temp.size();
+        cursor += (int)temp.size();
         return 0;
     }
 
