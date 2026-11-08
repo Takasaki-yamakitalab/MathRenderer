@@ -86,6 +86,7 @@ Token make_token(int type, const std::string& name);
 int move_cursor_horizontal(const std::vector<Token>& tokens, int& cursor, int dir);
 int insert_input(std::vector<Token>& tokens, int& cursor, const std::string& input);
 int process_delete_key(std::vector<Token>& tokens, int& cursor);
+int input_hist_manager(std::vector<Token>& tokens, int& cursor, const std::string& input);
 
 /**
  * @param [out] tokens : vector of input tokens

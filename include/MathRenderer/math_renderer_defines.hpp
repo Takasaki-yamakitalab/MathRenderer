@@ -79,6 +79,10 @@ struct Token {
     bool can_be_pointed = true;
     Token() {}
     Token(int ty) : type(ty) {}
+    bool operator==(const Token& other) const {
+        return type == other.type && m_math_str == other.m_math_str && m_letters == other.m_letters &&
+               can_be_pointed == other.can_be_pointed;
+    }
 };
 
 struct SpecialObject {

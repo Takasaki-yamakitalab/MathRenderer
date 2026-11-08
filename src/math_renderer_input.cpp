@@ -1,5 +1,6 @@
 #include "MathRenderer/math_renderer.hpp"
 #include "MathRenderer/math_renderer_defines.hpp"
+#include <deque>
 
 namespace math_renderer {
 Token make_token(int type, const std::string& name, const std::vector<std::string>& letters) {
@@ -510,7 +511,12 @@ int process_input(std::vector<Token>& tokens, int& cursor, const std::string& in
         cursor = 0;
         return 0;
     }
+    if (input == "up" || input == "down") {
+        input_hist_manager(tokens, cursor, input);
+        return 0;
+    }
     if (input == "equal") {
+        input_hist_manager(tokens, cursor, input);
         return 1;
     }
     if (input == "plot") {
@@ -532,5 +538,40 @@ int process_input(std::vector<Token>& tokens, int& cursor, const std::string& in
         return process_delete_key(tokens, cursor);
     }
     return insert_input(tokens, cursor, input);
+}
+
+int input_hist_manager(std::vector<Token>& tokens, int& cursor, const std::string& input) {
+    static std::deque<std::vector<Token>> hist;
+    static int hist_cursor = 0;
+    static int hist_max = 100;
+    if (input == "set_memsize") {
+        hist_max = cursor;
+    }
+    while (hist.size() > hist_max) {
+        hist.pop_front();
+        hist_cursor = 0;
+    }
+    if (input == "equal") {
+        if (!tokens.empty()) {
+            if (hist.empty() || tokens != hist.back())
+                hist.push_back(tokens);
+        }
+        hist_cursor = 0;
+    }
+    if (input == "up") {
+        hist_cursor++;
+        if (hist_cursor > hist.size()) hist_cursor = hist.size();
+        if (hist_cursor != 0) {
+            tokens = hist.at(hist.size() - hist_cursor);
+            cursor = tokens.size();
+        }
+    }
+    if (input == "down") {
+        hist_cursor--;
+        if (hist_cursor < 0) hist_cursor = 0;
+        if (hist_cursor != 0) tokens = hist.at(hist.size() - hist_cursor);
+        cursor = tokens.size();
+    }
+    return hist_cursor;
 }
 }  // namespace math_renderer
